@@ -1,3 +1,5 @@
-module github.com/Glomen/blog
+module github.com/Glomen/goblog
 
 go 1.19
+
+require github.com/julienschmidt/httprouter v1.3.0
