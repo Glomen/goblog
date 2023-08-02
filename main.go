@@ -21,9 +21,9 @@ func main() {
 }
 
 func routes(r *httprouter.Router) {
-	// путь к папке с внешними файлами
+	//путь к папке со внешними файлами: html, js, css, изображения и т.д.
 	r.ServeFiles("/public/*filepath", http.Dir("public"))
-	// выполняем запросы по указанным адресам
+	//что следует выполнять при входящих запросах указанного типа и по указанному адресу
 	r.GET("/", controller.StartPage)
 	r.GET("/users", controller.GetUsers)
 }
