@@ -2,28 +2,26 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/Glomen/goblog/app/controller"
-	"github.com/julienschmidt/httprouter"
+	"github.com/Glomen/goblog/database"
+	"github.com/Glomen/goblog/model"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	// запускаем роутер для обработки запросов
-	r := httprouter.New()
-	routes(r)
-	// прикрепляем роутер к свободному порту
-	// вторым параметром передаем роутер для работы с запросами
-	err := http.ListenAndServe("localhost:4444", r)
-	if err != nil {
-		log.Fatal(err)
-	}
+	loadEnv()
+	loadDatabase()
 }
 
-func routes(r *httprouter.Router) {
-	//путь к папке со внешними файлами: html, js, css, изображения и т.д.
-	r.ServeFiles("/public/*filepath", http.Dir("public"))
-	//что следует выполнять при входящих запросах указанного типа и по указанному адресу
-	r.GET("/", controller.StartPage)
-	r.GET("/users", controller.GetUsers)
+func loadDatabase() {
+	database.Connect()
+	database.Database.AutoMigrate(&model.User{})
+	database.Database.AutoMigrate(&model.Entry{})
+}
+
+func loadEnv() {
+	err := godotenv.Load(".env.local")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }
