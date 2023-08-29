@@ -1,16 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
+	"github.com/Glomen/goblog/controller"
 	"github.com/Glomen/goblog/database"
 	"github.com/Glomen/goblog/model"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	loadEnv()
 	loadDatabase()
+	serveApplication()
+}
+
+func loadEnv() {
+	err := godotenv.Load(".env.local")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }
 
 func loadDatabase() {
@@ -19,9 +30,13 @@ func loadDatabase() {
 	database.Database.AutoMigrate(&model.Entry{})
 }
 
-func loadEnv() {
-	err := godotenv.Load(".env.local")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+func serveApplication() {
+	router := gin.Default()
+
+	publicRoutes := router.Group("/auth")
+	publicRoutes.POST("/register", controller.Register)
+	publicRoutes.POST("/login", controller.Login)
+
+	router.Run(":8000")
+	fmt.Println("Server running on port 8000")
 }
