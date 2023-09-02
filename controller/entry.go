@@ -11,7 +11,7 @@ import (
 func AddEntry(context *gin.Context) {
 	var input model.Entry
 	if err := context.ShouldBindJSON(&input); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H("error", err.Error()))
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	user, err := helper.CurrentUser(context)
