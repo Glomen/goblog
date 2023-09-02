@@ -6,6 +6,7 @@ import (
 
 	"github.com/Glomen/goblog/controller"
 	"github.com/Glomen/goblog/database"
+	"github.com/Glomen/goblog/middleware"
 	"github.com/Glomen/goblog/model"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -36,6 +37,11 @@ func serveApplication() {
 	publicRoutes := router.Group("/auth")
 	publicRoutes.POST("/register", controller.Register)
 	publicRoutes.POST("/login", controller.Login)
+
+	protectedRoutes := router.Group("/api")
+	protectedRoutes.Use(middleware.JWTAuthMiddleware())
+	protectedRoutes.POST("/entry", controller.AddEntry)
+	protectedRoutes.GET("/entry", controller.GetAllEntries)
 
 	router.Run(":8000")
 	fmt.Println("Server running on port 8000")
